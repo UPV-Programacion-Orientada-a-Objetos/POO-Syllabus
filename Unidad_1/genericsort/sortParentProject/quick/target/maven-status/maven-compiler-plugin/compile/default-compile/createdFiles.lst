@@ -1,0 +1,10 @@
+com/spolancom/ch03/quick/FQuickSort.class
+com/spolancom/ch03/qsort/NonRecursiveQuickSort$StackElement.class
+com/spolancom/ch03/qsort/Qsort.class
+module-info.class
+com/spolancom/ch03/qsort/Partitioner.class
+com/spolancom/ch03/qsort/NonRecursiveQuickSort.class
+com/spolancom/ch03/quick/QuickSort.class
+com/spolancom/ch03/qsort/phase1/Partitioner.class
+com/spolancom/ch03/qsort/FJQuickSort$RASort.class
+com/spolancom/ch03/qsort/FJQuickSort.class
