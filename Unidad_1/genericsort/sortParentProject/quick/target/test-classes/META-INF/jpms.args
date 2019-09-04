@@ -1,4 +1,0 @@
---patch-module
-com.spolancom.quick=_
---add-reads
-com.spolancom.quick=ALL-UNNAMED
