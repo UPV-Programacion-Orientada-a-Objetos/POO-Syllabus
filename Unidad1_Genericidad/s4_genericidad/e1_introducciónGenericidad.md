@@ -191,3 +191,247 @@ public class GenericTypeOld {
     }
 }
 ```
+
+---
+
+Notamos que cuando utilizamos esta clase, tenemos que utilizar un casteo de tipo, lo que produce una ClassCastException en tiempo de ejecución. Escribimos las misma clase pero como genérica.
+```Java
+public class GenericsType<T> {
+  private T L;
+
+  public T get() {
+    return this.t;
+  }
+
+  public void set(T t1) {
+    this.t = t1;
+  }
+
+  public static void main(String args[]) {
+    GenericsType<String> type = new GenericsType<>();
+    type.set("Pankaj"); // Valid
+
+    GenericsType type1 = new GenericsType(); // rawType
+    type1.set("Pankaj"); // valid
+    type1.set(10); // valid and autoboxing support
+  }
+}
+```
+
+---
+
+La interfaz comparable es un buen ejemplo de una interfaz genérica.
+```Java
+package java.lang;
+import java.util.*;
+
+public interface Comparable<T> {
+  int compareTo(T o);
+}
+```
+
+De una forma similar, podemos utilizar la genericidad en nuestras clases e interfaces. También podemos tener multiples parámetros “tipo” cómo en la interfaz Map.
+
+---
+
+## Estándar de nombre en tipos genéricos
+
+La estandarización nos ayuda a entender código más fácilmente y el nombramiento de tipos es una buena práctica en java. Los parámetros más utilizados son:
+
+  * E – Elemento (usado extensamente por los colecciones de java, por ejemplo ArrayList, Set, etc).
+  * K – Key (utilizado en map).
+  * N – Número
+  * T – Tipo.
+  * V – Valor (Utilizado en map).
+  * S,U,V, etc. 2do, 3er, 4to tipo.
+
+---
+
+## Invocando e instanciando un tipo genérico
+
+Para referenciar la clase genérica box, se tiene que realizar una invocación de tipo genérico, Donde T es reemplazado con algún tipo concreto, como un Integer.
+```Java
+public class Box<T> {
+  // T stands for "Type"
+  private T t;
+  public void set(T t) { this.t = t; }
+  public T get() { return t; }
+}
+```
+
+Una invocación de un tipo genérico es generalmente conocido como un tipo parametrizado.
+
+```Java
+Box<Integer> integerBox;
+```
+---
+
+En java SE7 y posterior, se pueden reemplazar los argumentos requeridos para invocar el constructor de una clase genérica como un conjunto vacío (<>), de este modo el compilador lo puede determinar o inferir a partir del contexto.
+
+```Java
+Box<Integer> integerBox = new Box<>();
+```
+
+---
+
+Una clase genérica puede tener múltiples parámetros. Por ejemplo
+
+```Java
+public interface Pair<K, V> {
+  public K getKey();
+  public V getValue();
+}
+
+public class OrderedPair<K, V> implements Pair<K, V> {
+  private K key;
+  private V value;
+
+  public OrderedPair(K key, V value) {
+    this.key = key;
+    this.value = value;
+  }
+
+  public K getKey() { return key; }
+  public V getValue() { return value; }
+}
+```
+
+---
+
+Las siguientes sentencias crean dos instancias de la clase ParOrdenado:
+
+```Java
+Pair<String, Integer> p1 = new OrderedPair<String, Integer>("Even", 8);
+Pair<String, String> p2 = new OrderedPair<String, String>("hello", "world");
+```
+
+---
+
+## Tipos parametrizados
+
+También se puede substituir una parámetro de tipo (es decir, k o v) por un tipo parametrizado (por ejemplo, `List<String>`). Por ejemplo.
+
+```Java
+OrderedPair<String, Box<Integer>> p = new OrderedPair<>("primes", new Box<Integer>(...));
+```
+
+---
+
+### Tipos Vacios
+
+Un tipo vacío es el  nombre de una clase o interface sin ningún tipo de argumentos.
+```Java
+public class Box<T> {
+  public void set(T t) { /* ... */}
+  // ...
+}
+
+Box rawBox = newBox/(;)
+```
+
+Básicamente se utiliza un tipo `object` como parámetro, con las desventajas dichas anteriormente.
+
+---
+
+## Métodos vacios
+
+*Métodos genéricos* son métodos que introducen sus propios parámetros tipo. Es similar a la declaración de tipos genéricos, pero el alcance esta limitado al método donde fue declarado. Métodos estáticos y no estáticos son permitidos, así como constructores de clase.
+
+```Java
+public class Pair<K, V> {
+  private K key;
+  private V value;
+
+  public Pair(K key, V value) {
+    this.key = key;
+    this.value = value;
+  }
+
+  public void setKey(K key) { this.key = key; }
+  public void setValue(V value) { this.value = value; }
+  public K getKey { return key; }
+  public V getValue() { return value; }
+}
+
+public class Util {
+  public static <K, V> boolean compare (Pair<K, V> p1, Pair<K, V> p2) {
+    return p1.getKey().equals(p2.getKey()) && p1.getValue().equals(p2.getValue());
+  }
+}
+```
+
+---
+
+Sintaxis de Invocación:
+```Java
+Pair<Integer, String> p1 = new Pair<>(1, "appe");
+Pair<Integer, String> p2 = new Pair<>(2, "pear");
+boolean same = Util.<Integer, String>compare(p1, p2);
+```
+
+Sintaxis sin explicitación
+```Java
+Pair<Integer, String> p1 = new Pair<>(1, "apple");
+Pair<Integer, String> p2 = new Pair<>(2, "pear");
+boolean same = Util.compare(p1, p2);
+```
+
+---
+
+## Paŕametros acotados
+
+Existen ocasiones donde se desea restringir los tipos que pueden ser utilizados como argumentos en tipos parametrizados. Por ejemplo, una método que opere con números sólo puede aceptar instancias de Números o sus subclases. Para esto sirve los parámetros acotados.
+
+Para declarar parámetros acotados, liste el nombre del parámetro, seguido por la instrucción `extends`, seguidor de su cota superior, por ejemplo Number. Note que, en este contexto, `extends` es utilizado en sentido general para significar “se extiende” (como en las clases) o “implementa” (como en las interfaces).
+
+```Java
+public class Box<T> {
+  private T t;
+
+  public void set(T t) {
+    this.t = t;
+  }
+
+  public T get() {
+    return t;
+  }
+
+  public <U extends Number> void inpect(U u) {
+    System.out.println("T: " + t.getclass().getName());
+    System.out.println("U :" + u.getClass().getName());
+  }
+
+  public static void main(String[ args]) {
+    Box<Integer> integerBox = new Box<Integer>();
+    integer.Box.set(new Integer(10));
+    integerBox.inspect("some text"); // Error: this is still string
+  }
+}
+```
+
+---
+
+Modificando nuestro método genérico para incluir tipos acotados, **la compilación ahora falla**, dado que nuestra invocación de inspect aún incluye un String.
+
+```
+Box.java:21: <U>inspect(U) in Box<java.lang.Integer> cannot be applied to (java.lang.String)...
+error
+```
+
+Adicionalmente para limitar los tipos se puede usar instancias de un tipo genérico. Los parámetros acotados permiten invocar métodos definidos en los límites
+
+---
+
+El método `isEven` invoca al método `intValue` definido en la clase `Integer` por medio de n.
+
+```Java
+public class NaturalNumber<T extends Integer> {
+  private T n;
+  public NaturalNumber(T t) { this.n = n; }
+  public boolean isEven() {
+    return n.intValue() % 2 == 0;
+  }
+
+  // ...
+}
+```
